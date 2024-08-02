@@ -1,5 +1,5 @@
 import { products } from '/data.js';
-
+const favorites = [];
 
 const divElement = (content) => {
   return `<div>${content}</div>`;
@@ -25,8 +25,9 @@ const albumElement = (albumData) => {
   const tracksHtml = tracksElement(albumData.details);
 
   return albumDivElement(`
-      <h2>${albumData.id}</h2>
+      <h2 class="album-id">${albumData.id}</h2>
       <h3>price: ${albumData.price}</h3>
+      <button class="album-${albumData.id}">+</button>
       <p class="album-name">album name: ${albumData.name}</p>
       ${divElement(tracksHtml)}
     `);
@@ -71,6 +72,26 @@ const loadEvent = function () {
 
     rootElement.insertAdjacentHTML("beforeend", vendorElement(vendorName, vendorAlbumsHtml));
   }
+
+  const buttonElements = document.querySelectorAll("button");
+  buttonElements.forEach(button => button.addEventListener("click", () => {
+    /* const h2Element = button.parentElement.querySelector("h2.album-id");
+    const albumObj = products.find(album => album.id === Number(h2Element.textContent));
+    console.log(albumObj); */
+
+    // console.log(button.classList[0].substring(6))
+    const albumId = Number(button.classList[0].substring(6));
+    const albumObj = products.find(album => album.id === albumId);
+    if (button.textContent === "+") {
+      favorites.push(albumObj);
+      button.textContent = "-";
+    } else {
+      const albumIndex = favorites.findIndex(album => album.id === albumId);
+      favorites.splice(albumIndex, 1);
+      button.textContent = "+";
+    }
+    console.log(favorites);
+  }));
 }
 
 window.addEventListener("load", loadEvent);
